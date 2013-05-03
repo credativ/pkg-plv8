@@ -1,5 +1,5 @@
 plv8 (1.4.0-1) unstable; urgency=low
 
-  * New upstream release
+  * Initial upload.
 
- -- Daniel Farina <daniel@heroku.com>  Tue, 30 Apr 2013 11:29:41 -0700
+ -- Evgeni Golov <evgeni@debian.org>  Fri, 03 May 2013 09:55:52 +0200

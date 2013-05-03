@@ -1,6 +1,6 @@
 Source: plv8
 Priority: extra
-Maintainer: Daniel Farina <daniel@heroku.com>
+Maintainer: Evgeni Golov <evgeni@debian.org>
 Build-Depends: debhelper (>= 8.0.0), postgresql-server-dev-all,
  python-dev, libv8-dev
 Standards-Version: 3.9.3
