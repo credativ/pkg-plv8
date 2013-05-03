@@ -2,7 +2,7 @@ Source: plv8
 Priority: extra
 Maintainer: Evgeni Golov <evgeni@debian.org>
 Build-Depends: debhelper (>= 8.0.0), postgresql-server-dev-all,
- libv8-dev
+ libv8-dev, markdown
 Standards-Version: 3.9.3
 Section: libs
 Homepage: http://code.google.com/p/plv8js/

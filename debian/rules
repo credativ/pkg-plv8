@@ -9,12 +9,16 @@ build-indep:
 build build-arch: build-stamp
 build-stamp:
 	+pg_buildext build $(CURDIR) build-%v
+	markdown doc/plv8.md > doc/plv8.html
 	touch $@
 
 clean:
 	+pg_buildext clean $(CURDIR) build-%v
-	rm -rf build-?.? debian/postgresql-?.?-plv8
+	rm -rf build-?.? debian/postgresql-?.?-plv8 doc/plv8.html
 	dh $@
+
+override_dh_installdocs:
+	dh_installdocs doc/*
 
 override_dh_auto_test:
 	# noop
