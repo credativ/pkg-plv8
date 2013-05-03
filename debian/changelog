@@ -1,5 +1,6 @@
 plv8 (1.4.0-1) unstable; urgency=low
 
   * Initial upload.
+    Closes: #706713
 
  -- Evgeni Golov <evgeni@debian.org>  Fri, 03 May 2013 09:55:52 +0200
