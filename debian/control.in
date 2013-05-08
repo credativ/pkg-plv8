@@ -15,7 +15,7 @@ Depends: postgresql-PGVERSION, ${shlibs:Depends}, ${misc:Depends}
 Provides: postgresql-plv8
 Description: Procedural language interface between PostgreSQL and JavaScript
  V8 is a high performance JavaScript engine written in C++.  It is used
- in the web browser Chromium.
+ in the document-oriented data store MongoDB.
  .
  PostgreSQL is an open source SQL database server.
  .
