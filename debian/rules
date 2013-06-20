@@ -8,7 +8,10 @@ clean: debian/control
 build-indep:
 build build-arch: build-stamp
 build-stamp:
-	+pg_buildext build $(CURDIR) build-%v
+	# we do not set srcdir here
+	set -e; for v in $(shell pg_buildext supported-versions); do \
+		$(MAKE) -C $(CURDIR) -f $(CURDIR)/Makefile PG_CONFIG="/usr/lib/postgresql/$$v/bin/pg_config" VPATH="$(CURDIR)" USE_PGXS=1; \
+	done
 	markdown doc/plv8.md > doc/plv8.html
 	touch $@
 

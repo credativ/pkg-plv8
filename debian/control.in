@@ -8,6 +8,7 @@ Section: libs
 Homepage: http://code.google.com/p/plv8js/
 #Vcs-Git: git://git.debian.org/collab-maint/plv8.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/plv8.git;a=summary
+XS-Testsuite: autopkgtest
 
 Package: postgresql-PGVERSION-plv8
 Architecture: any

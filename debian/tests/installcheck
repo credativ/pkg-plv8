@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -eu
+
+unset TMPDIR
+
+for version in $(pg_buildext supported-versions); do
+	# redirect stderr to stdout so autopkgtest doesn't consider "NOTICE:
+	# database "contrib_regression" does not exist, skipping" to be an
+	# error
+	if ! pg_virtualenv -v $version \
+		make installcheck PG_CONFIG=/usr/lib/postgresql/$version/bin/pg_config USE_PGXS=1 2>&1; then
+		if [ -r regression.diffs ]; then
+			echo "**** regression.diffs ****"
+			cat regression.diffs
+		fi
+		exit 1
+	fi
+done
