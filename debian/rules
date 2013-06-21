@@ -10,7 +10,8 @@ build build-arch: build-stamp
 build-stamp:
 	# we do not set srcdir here
 	set -e; for v in $(shell pg_buildext supported-versions); do \
-		$(MAKE) -C $(CURDIR) -f $(CURDIR)/Makefile PG_CONFIG="/usr/lib/postgresql/$$v/bin/pg_config" VPATH="$(CURDIR)" USE_PGXS=1; \
+		mkdir build-$$v build-$$v/results; \
+		$(MAKE) -C $(CURDIR)/build-$$v -f $(CURDIR)/Makefile PG_CONFIG="/usr/lib/postgresql/$$v/bin/pg_config" VPATH="$(CURDIR)" USE_PGXS=1; \
 	done
 	markdown doc/plv8.md > doc/plv8.html
 	touch $@
@@ -29,7 +30,10 @@ override_dh_auto_test:
 binary-indep:
 binary binary-arch:
 	dh_prep
-	+pg_buildext install $(CURDIR) build-%v postgresql-%v-plv8
+	set -e; for v in $(shell pg_buildext supported-versions); do \
+		ln -s ../uninstall_plv8.sql build-$$v; \
+		$(MAKE) -C $(CURDIR)/build-$$v -f $(CURDIR)/Makefile install DESTDIR=$(CURDIR)/debian/postgresql-$$v-plv8 PG_CONFIG="/usr/lib/postgresql/$$v/bin/pg_config" VPATH="$(CURDIR)" USE_PGXS=1; \
+	done
 	dh $@
 
 %:
