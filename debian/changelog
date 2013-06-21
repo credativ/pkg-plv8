@@ -3,6 +3,8 @@ plv8 (1.4.0-2) UNRELEASED; urgency=low
   * Manually loop over the versions to build/install instead of using
     pg_buildext because the buildsystem doesn't like "srcdir" in the
     environment.
+  * Makefile: use pg_config --includedir-server so we get the version
+    number for the right PostgreSQL version.
   * Run make installcheck using autopkgtest.
 
  -- Christoph Berg <myon@debian.org>  Thu, 20 Jun 2013 16:58:38 +0200
