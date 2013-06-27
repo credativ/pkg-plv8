@@ -1,9 +1,10 @@
 Source: plv8
 Priority: extra
 Maintainer: Evgeni Golov <evgeni@debian.org>
+Uploaders: Christoph Berg <myon@debian.org>
 Build-Depends: debhelper (>= 8.0.0), postgresql-server-dev-all,
  libv8-dev, markdown
-Standards-Version: 3.9.3
+Standards-Version: 3.9.4
 Section: libs
 Homepage: http://code.google.com/p/plv8js/
 #Vcs-Git: git://git.debian.org/collab-maint/plv8.git
