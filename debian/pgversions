@@ -1,7 +1,5 @@
-# versions <= 8.3 have VPATH problems
-8.4
+#8.4 works on amd64, but fails on i386, we just exclude it completely
 9.0
 9.1
 9.2
 9.3
-
