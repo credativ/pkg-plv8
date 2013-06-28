@@ -2,6 +2,8 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: plv8js
 Upstream-Contact: 
 Source: http://code.google.com/p/plv8js/
+Comment: This Debian package was created for xtuple.com, and donated to the
+ Debian community.
 
 Files: *
 Copyright: 2009-2013 PLV8JS Development Group
@@ -29,6 +31,7 @@ Comment:
 
 Files: debian/*
 Copyright: 2013 Evgeni Golov <evgeni@debian.org>
+           2013 Christoph Berg <myon@debian.org>
 License: Expat
 
 License: PostgreSQL

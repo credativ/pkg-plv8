@@ -15,5 +15,7 @@ plv8 (1.4.0-1) unstable; urgency=low
 
   * Initial upload.
     Closes: #706713
+  * This Debian package was created for xtuple.com, and donated to the
+    Debian community.
 
  -- Evgeni Golov <evgeni@debian.org>  Fri, 03 May 2013 09:55:52 +0200
