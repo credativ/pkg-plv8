@@ -1,4 +1,4 @@
-plv8 (1.4.0-2) UNRELEASED; urgency=low
+plv8 (1.4.0-2) unstable; urgency=low
 
   * Manually loop over the versions to build/install instead of using
     pg_buildext because the buildsystem doesn't like "srcdir" in the
@@ -9,7 +9,7 @@ plv8 (1.4.0-2) UNRELEASED; urgency=low
   * Run make installcheck using autopkgtest. (Needs postgresql-common >= 146).
   * Point Vcs headers at anonscm.debian.org.
 
- -- Christoph Berg <myon@debian.org>  Thu, 27 Jun 2013 15:17:38 +0200
+ -- Christoph Berg <myon@debian.org>  Fri, 28 Jun 2013 15:13:29 +0200
 
 plv8 (1.4.0-1) unstable; urgency=low
 
