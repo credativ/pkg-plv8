@@ -1,3 +1,10 @@
+plv8 (1.4.0.ds-1) unstable; urgency=low
+
+  * Remove coffee-script.js and livescript.js from the source tarball (we
+    don't have source code for these), and disable building the extensions.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 01 Jul 2013 13:21:31 +0200
+
 plv8 (1.4.0-2) unstable; urgency=low
 
   * Manually loop over the versions to build/install instead of using

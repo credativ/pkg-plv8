@@ -4,6 +4,8 @@ set -eu
 
 unset TMPDIR
 
+export DISABLE_DIALECT=1
+
 for version in $(pg_buildext supported-versions); do
 	test -e build-$version/sql || ln -s ../sql ../expected build-$version
 	# set custom_variable_classes where needed

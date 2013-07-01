@@ -13,22 +13,6 @@ Copyright: 2009-2013 PLV8JS Development Group
            2009-2013 Kiswono Prayogo <kiswono@gmail.com>
 License: PostgreSQL
 
-Files: coffee-script.js
-Copyright: 2011 Jeremy Ashkenas
-License: Expat
-Comment:
- Upstream Git (https://github.com/jashkenas/coffee-script/blob/1.3.1/LICENSE)
- indicates this is the Expat version of the MIT license.
-
-Files: livescript.js
-Copyright: 2012 Jeremy Ashkenas
-           2012 Satoshi Murakami
-           2012 George Zahariev
-License: Expat
-Comment:
- Upstream Git (https://github.com/gkz/LiveScript/blob/1.1.1/LICENSE)
- indicates this is the Expat version of the MIT license.
-
 Files: debian/*
 Copyright: 2013 Evgeni Golov <evgeni@debian.org>
            2013 Christoph Berg <myon@debian.org>

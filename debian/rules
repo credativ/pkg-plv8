@@ -5,6 +5,8 @@ include /usr/share/postgresql-common/pgxs_debian_control.mk
 clean: debian/control
 .PHONY: debian/control
 
+export DISABLE_DIALECT=1
+
 build-indep:
 build build-arch: build-stamp
 build-stamp:
