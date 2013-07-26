@@ -1,3 +1,10 @@
+plv8 (1.4.0.ds-2) UNRELEASED; urgency=low
+
+  * debian/tests/control: Add missing postgresql-server-dev-all test
+    dependency, so that installcheck can find pg_buildext.
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 26 Jul 2013 08:24:50 +0200
+
 plv8 (1.4.0.ds-1) unstable; urgency=low
 
   * Remove coffee-script.js and livescript.js from the source tarball (we
