@@ -9,6 +9,7 @@ plv8 (1.4.0.ds-2) UNRELEASED; urgency=low
   * Use plain pg_buildext; pgxs.mk in 9.1/9.2/9.3 got fixed for srcdir.
   * Install docs in all module packages built.
   * debian/tests/control: Use allow-stderr (needs autopkgtest 2.3).
+  * debian/pgversions: use "9.0"+ and B-D on pg-server-dev-all >= 148.
 
  -- Christoph Berg <myon@debian.org>  Thu, 08 Aug 2013 19:00:13 +0200
 
