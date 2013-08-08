@@ -13,12 +13,9 @@ for version in $(pg_buildext supported-versions); do
 		9.0|9.1) ccc="-c --createclusterconf=$PWD/debian/createcluster.conf" ;;
 		*) ccc="" ;;
 	esac
-	# redirect stderr to stdout so autopkgtest doesn't consider "NOTICE:
-	# database "contrib_regression" does not exist, skipping" to be an
-	# error
 	if ! pg_virtualenv -s -v $version $ccc \
 		make -C build-$version -f $PWD/Makefile installcheck \
-		PG_CONFIG=/usr/lib/postgresql/$version/bin/pg_config USE_PGXS=1 2>&1; then
+		PG_CONFIG=/usr/lib/postgresql/$version/bin/pg_config USE_PGXS=1; then
 		if [ -r build-$version/regression.diffs ]; then
 			echo "**** regression.diffs ****"
 			cat build-$version/regression.diffs
