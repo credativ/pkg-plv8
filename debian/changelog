@@ -1,10 +1,15 @@
 plv8 (1.4.0.ds-2) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * debian/tests/control: Add missing postgresql-server-dev-all test
     dependency, so that installcheck can find pg_buildext.
   * debian/tests/installcheck: Create build-$version if it does not exist.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 26 Jul 2013 08:24:50 +0200
+  [ Christoph Berg ]
+  * Use plain pg_buildext; pgxs.mk in 9.1/9.2/9.3 got fixed for srcdir.
+  * Install docs in all module packages built.
+
+ -- Christoph Berg <myon@debian.org>  Thu, 08 Aug 2013 19:00:13 +0200
 
 plv8 (1.4.0.ds-1) unstable; urgency=low
 

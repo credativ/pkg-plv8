@@ -7,16 +7,9 @@ clean: debian/control
 
 export DISABLE_DIALECT=1
 
-build-indep:
-build build-arch: build-stamp
-build-stamp:
-	# we do not set srcdir here
-	set -e; for v in $(shell pg_buildext supported-versions); do \
-		mkdir build-$$v build-$$v/results; \
-		$(MAKE) -C $(CURDIR)/build-$$v -f $(CURDIR)/Makefile PG_CONFIG="/usr/lib/postgresql/$$v/bin/pg_config" VPATH="$(CURDIR)" USE_PGXS=1; \
-	done
+override_dh_auto_build:
+	+pg_buildext build $(CURDIR) build-%v
 	markdown doc/plv8.md > doc/plv8.html
-	touch $@
 
 clean:
 	+pg_buildext clean $(CURDIR) build-%v
@@ -24,16 +17,13 @@ clean:
 	dh $@
 
 override_dh_installdocs:
-	dh_installdocs doc/*
+	dh_installdocs --all doc/*
 
 override_dh_auto_test:
 	# noop
 
 override_dh_auto_install:
-	set -e; for v in $(shell pg_buildext supported-versions); do \
-		ln -s ../uninstall_plv8.sql build-$$v; \
-		$(MAKE) -C $(CURDIR)/build-$$v -f $(CURDIR)/Makefile install DESTDIR=$(CURDIR)/debian/postgresql-$$v-plv8 PG_CONFIG="/usr/lib/postgresql/$$v/bin/pg_config" VPATH="$(CURDIR)" USE_PGXS=1; \
-	done
+	+pg_buildext install $(CURDIR) build-%v postgresql-%v-plv8
 
 %:
 	dh $@
