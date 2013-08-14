@@ -5,7 +5,7 @@ Uploaders: Christoph Berg <myon@debian.org>
 Build-Depends: debhelper (>= 8.0.0), postgresql-server-dev-all (>= 148~),
  libv8-dev, markdown
 Standards-Version: 3.9.4
-Section: libs
+Section: database
 Homepage: http://code.google.com/p/plv8js/
 Vcs-Git: git://anonscm.debian.org/pkg-postgresql/plv8.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-postgresql/plv8.git

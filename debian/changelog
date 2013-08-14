@@ -10,8 +10,9 @@ plv8 (1.4.0.ds-2) UNRELEASED; urgency=low
   * Install docs in all module packages built.
   * debian/tests/control: Use allow-stderr (needs autopkgtest 2.3).
   * debian/pgversions: use "9.0"+ and B-D on pg-server-dev-all >= 148.
+  * debian/control.in: Section: database.
 
- -- Christoph Berg <myon@debian.org>  Thu, 08 Aug 2013 19:00:13 +0200
+ -- Christoph Berg <myon@debian.org>  Wed, 14 Aug 2013 09:29:50 +0200
 
 plv8 (1.4.0.ds-1) unstable; urgency=low
 
