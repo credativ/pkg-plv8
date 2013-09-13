@@ -13,7 +13,7 @@ override_dh_auto_build:
 
 clean:
 	+pg_buildext clean $(CURDIR) build-%v
-	rm -rf build-?.? debian/postgresql-?.?-plv8 doc/plv8.html
+	rm -rf build-?.? debian/postgresql-?.?-plv8 debian/*.substvars doc/plv8.html
 	dh $@
 
 override_dh_installdocs:

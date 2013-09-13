@@ -11,9 +11,9 @@ Vcs-Git: git://anonscm.debian.org/pkg-postgresql/plv8.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-postgresql/plv8.git
 XS-Testsuite: autopkgtest
 
-Package: postgresql-9.1-plv8
+Package: postgresql-9.3-plv8
 Architecture: any
-Depends: postgresql-9.1, ${shlibs:Depends}, ${misc:Depends}
+Depends: postgresql-9.3, ${shlibs:Depends}, ${misc:Depends}
 Provides: postgresql-plv8
 Description: Procedural language interface between PostgreSQL and JavaScript
  V8 is a high performance JavaScript engine written in C++.  It is used
