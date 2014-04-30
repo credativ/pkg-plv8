@@ -1,10 +1,10 @@
 Source: plv8
 Priority: extra
-Maintainer: Evgeni Golov <evgeni@debian.org>
-Uploaders: Christoph Berg <myon@debian.org>
-Build-Depends: debhelper (>= 8.0.0), postgresql-server-dev-all (>= 148~),
+Maintainer: Debian PostgreSQL Maintainers <pkg-postgresql-public@lists.alioth.debian.org>
+Uploaders: Evgeni Golov <evgeni@debian.org>, Christoph Berg <myon@debian.org>
+Build-Depends: debhelper (>= 9), postgresql-server-dev-all (>= 148~),
  libv8-dev, markdown
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Section: database
 Homepage: http://code.google.com/p/plv8js/
 Vcs-Git: git://anonscm.debian.org/pkg-postgresql/plv8.git
