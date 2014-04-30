@@ -27,3 +27,9 @@ override_dh_auto_install:
 
 %:
 	dh $@
+
+VERSION = $(shell dpkg-parsechangelog | sed -ne 's/^Version: \(.*.ds\).*/\1/p')
+DIR = $(shell basename $(CURDIR))
+origtargz: clean
+	! test -f .pc/applied-patches
+	cd .. && tar --exclude .git --exclude .pc --exclude debian -cvzf plv8_$(VERSION).orig.tar.gz $(DIR)

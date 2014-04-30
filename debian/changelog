@@ -1,3 +1,10 @@
+plv8 (1.4.2.ds-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Add origtargz target to debian/rules.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 30 Apr 2014 10:36:52 +0200
+
 plv8 (1.4.0.ds-2) unstable; urgency=low
 
   [ Martin Pitt ]
