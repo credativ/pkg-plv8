@@ -143,7 +143,8 @@ static void plv8_xact_cb(XactEvent event, void *arg);
 static plv8_exec_env *CreateExecEnv(Handle<Function> script);
 static plv8_proc *Compile(Oid fn_oid, FunctionCallInfo fcinfo,
 					bool validate, bool is_trigger, Dialect dialect);
-static Local<Function> CompileFunction(const char *proname, int proarglen,
+static Local<Function> CompileFunction(Handle<Context> global_context,
+					const char *proname, int proarglen,
 					const char *proargs[], const char *prosrc,
 					bool is_trigger, bool retset, Dialect dialect);
 static Datum CallFunction(PG_FUNCTION_ARGS, plv8_exec_env *xenv,
@@ -339,7 +340,9 @@ common_pl_inline_handler(PG_FUNCTION_ARGS, Dialect dialect) throw()
 		HandleScope			handle_scope;
 		char			   *source_text = codeblock->source_text;
 
-		Handle<Function>	function = CompileFunction(NULL, 0, NULL,
+		Handle<Context>	global_context = GetGlobalContext();
+		Handle<Function>	function = CompileFunction(global_context,
+										NULL, 0, NULL,
 										source_text, false, false, dialect);
 		plv8_exec_env	   *xenv = CreateExecEnv(function);
 		return CallFunction(fcinfo, xenv, 0, NULL, NULL);
@@ -693,6 +696,9 @@ common_pl_call_validator(PG_FUNCTION_ARGS, Dialect dialect) throw()
 	char			functyptype;
 	bool			is_trigger = false;
 
+	if (!CheckFunctionValidatorAccess(fcinfo->flinfo->fn_oid, fn_oid))
+		PG_RETURN_VOID();
+
 	/* Get the new function's pg_proc entry */
 	tuple = SearchSysCache(PROCOID, ObjectIdGetDatum(fn_oid), 0, 0, 0);
 	if (!HeapTupleIsValid(tuple))
@@ -944,7 +950,7 @@ static char *
 CompileDialect(const char *src, Dialect dialect)
 {
 	HandleScope		handle_scope;
-	static Persistent<Context>	context = Context::New(NULL);
+	static Persistent<Context>	context = Context::New((ExtensionConfiguration*)NULL);
 	Context::Scope	context_scope(context);
 	TryCatch		try_catch;
 	Local<String>	key;
@@ -1030,11 +1036,23 @@ Compile(Oid fn_oid, FunctionCallInfo fcinfo, bool validate, bool is_trigger,
 	}
 	PG_END_TRY();
 
-	HandleScope		handle_scope;
 	plv8_proc_cache *cache = proc->cache;
 
 	if (cache->function.IsEmpty())
+	{
+		/*
+		 * We need to create global context before entering CompileFunction
+		 * because GetGlobalContext could call startup procedure, which
+		 * could be this cache->function itself.  In this scenario,
+		 * Compile is called recursively and plv8_get_proc tries to refresh
+		 * cache because cache->function is still not yet ready at this
+		 * point.  Then some pointers of cache will become stale by pfree
+		 * and CompileFunction ends up compiling freed function source.
+		 */
+		HandleScope		handle_scope;
+		Handle<Context>	global_context = GetGlobalContext();
 		cache->function = Persistent<Function>::New(CompileFunction(
+						global_context,
 						cache->proname,
 						cache->nargs,
 						(const char **) argnames,
@@ -1042,12 +1060,14 @@ Compile(Oid fn_oid, FunctionCallInfo fcinfo, bool validate, bool is_trigger,
 						is_trigger,
 						cache->retset,
 						dialect));
+	}
 
 	return proc;
 }
 
 static Local<Function>
 CompileFunction(
+	Handle<Context> global_context,
 	const char *proname,
 	int proarglen,
 	const char *proargs[],
@@ -1058,7 +1078,6 @@ CompileFunction(
 {
 	HandleScope		handle_scope;
 	StringInfoData	src;
-	Handle<Context>	global_context = GetGlobalContext();
 
 	initStringInfo(&src);
 
@@ -1423,7 +1442,11 @@ Converter::Init()
 {
 	for (int c = 0; c < m_tupdesc->natts; c++)
 	{
+		if (m_tupdesc->attrs[c]->attisdropped)
+			continue;
+
 		m_colnames[c] = ToString(NameStr(m_tupdesc->attrs[c]->attname));
+
 		PG_TRY();
 		{
 			if (m_memcontext == NULL)
@@ -1456,6 +1479,9 @@ Converter::ToValue(HeapTuple tuple)
 	{
 		Datum		datum;
 		bool		isnull;
+
+		if (m_tupdesc->attrs[c]->attisdropped)
+			continue;
 
 #if PG_VERSION_NUM >= 90000
 		datum = heap_getattr(tuple, c + 1, m_tupdesc, &isnull);
@@ -1499,11 +1525,12 @@ Converter::ToDatum(Handle<v8::Value> value, Tuplestorestate *tupstore)
 	if (!m_is_scalar)
 	{
 		Handle<Array> names = obj->GetPropertyNames();
-		if ((int) names->Length() != m_tupdesc->natts)
-			throw js_error("expected fields and property names have different cardinality");
 
 		for (int c = 0; c < m_tupdesc->natts; c++)
 		{
+			if (m_tupdesc->attrs[c]->attisdropped)
+				continue;
+
 			bool found = false;
 			CString  colname(m_colnames[c]);
 			for (int d = 0; d < m_tupdesc->natts; d++)
@@ -1522,6 +1549,9 @@ Converter::ToDatum(Handle<v8::Value> value, Tuplestorestate *tupstore)
 
 	for (int c = 0; c < m_tupdesc->natts; c++)
 	{
+		if (m_tupdesc->attrs[c]->attisdropped)
+			continue;
+
 		Handle<v8::Value> attr = m_is_scalar ? value : obj->Get(m_colnames[c]);
 		if (attr.IsEmpty() || attr->IsUndefined() || attr->IsNull())
 			nulls[c] = true;
