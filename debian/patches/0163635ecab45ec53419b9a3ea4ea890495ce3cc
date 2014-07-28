@@ -1,0 +1,48 @@
+commit 0163635ecab45ec53419b9a3ea4ea890495ce3cc
+Author: Hitoshi Harada <hharada@gopivotal.com>
+Date:   Mon May 19 23:03:35 2014 -0700
+
+    Correct check in plv8.return_next.
+    
+    The same logic is borrowed from window function API.  Per report #88.
+
+diff --git a/expected/inline.out b/expected/inline.out
+index 979a2c2..1080a94 100644
+--- a/expected/inline.out
++++ b/expected/inline.out
+@@ -1,2 +1,5 @@
+ DO $$ plv8.elog(NOTICE, 'this', 'is', 'inline', 'code') $$ LANGUAGE plv8;
+ NOTICE:  this is inline code
++DO $$ plv8.return_next(new Object());$$ LANGUAGE plv8;
++ERROR:  Error: return_next called in context that cannot accept a set
++DETAIL:  undefined() LINE 1:  plv8.return_next(new Object());
+diff --git a/plv8_func.cc b/plv8_func.cc
+index 9426236..4abf5d6 100644
+--- a/plv8_func.cc
++++ b/plv8_func.cc
+@@ -930,13 +930,14 @@ static Handle<v8::Value>
+ plv8_ReturnNext(const Arguments& args)
+ {
+ 	Handle<v8::Object>	self = args.This();
+-	Converter *conv = static_cast<Converter *>(
+-			Handle<External>::Cast(
+-				self->GetInternalField(PLV8_INTNL_CONV))->Value());
++	Handle<v8::Value>	conv_value = self->GetInternalField(PLV8_INTNL_CONV);
+ 
+-	if (conv == NULL)
++	if (!conv_value->IsExternal())
+ 		throw js_error("return_next called in context that cannot accept a set");
+ 
++	Converter *conv = static_cast<Converter *>(
++			Handle<External>::Cast(conv_value)->Value());
++
+ 	Tuplestorestate *tupstore = static_cast<Tuplestorestate *>(
+ 			Handle<External>::Cast(
+ 				self->GetInternalField(PLV8_INTNL_TUPSTORE))->Value());
+diff --git a/sql/inline.sql b/sql/inline.sql
+index 361f9fc..ba194e3 100644
+--- a/sql/inline.sql
++++ b/sql/inline.sql
+@@ -1 +1,2 @@
+ DO $$ plv8.elog(NOTICE, 'this', 'is', 'inline', 'code') $$ LANGUAGE plv8;
++DO $$ plv8.return_next(new Object());$$ LANGUAGE plv8;

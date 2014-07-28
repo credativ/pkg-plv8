@@ -1,0 +1,24 @@
+commit 0bf77f3c5e2ee7d47da426b1963cd887b97e7d61
+Author: Hitoshi Harada <umi.tanuki@gmail.com>
+Date:   Wed May 7 00:29:54 2014 -0700
+
+    9.4 support with minor API change.
+    
+    Patch by Michael Paquier.
+
+diff --git a/plv8_func.cc b/plv8_func.cc
+index b84ad4a..898ae5b 100644
+--- a/plv8_func.cc
++++ b/plv8_func.cc
+@@ -518,7 +518,11 @@ plv8_Prepare(const Arguments &args)
+ 		CString			typestr(array->Get(i));
+ 		int32			typemod;
+ 
++#if PG_VERSION_NUM >= 90400
++		parseTypeString(typestr, &types[i], &typemod, false);
++#else
+ 		parseTypeString(typestr, &types[i], &typemod);
++#endif
+ 	}
+ 
+ 	PG_TRY();

@@ -1,0 +1,96 @@
+commit aedc9e64ba18d591f0a4afadecc936d778282bde
+Author: Hitoshi Harada <hharada@gopivotal.com>
+Date:   Sat Jun 7 22:22:25 2014 -0700
+
+    Mark NULL flag in Converter even if the column is dropped.
+    
+    A crash was reported by Lu Wenlong when trigger is used with dropped
+    columns.
+
+diff --git a/expected/plv8.out b/expected/plv8.out
+index 73c4808..dc03bfc 100644
+--- a/expected/plv8.out
++++ b/expected/plv8.out
+@@ -790,3 +790,27 @@ SELECT f_attdrop(2);
+  (2,10)
+ (1 row)
+ 
++create table plv8test ( id serial primary key, data json, sum integer, num integer);
++insert into plv8test (data, sum, num) values ('{"a": 1, "b": 2}', 0, 0);
++insert into plv8test (data, sum, num) values ('{"a": 3, "b": 4}', 0, 0);
++insert into plv8test (data, sum, num) values ('{"a": 3, "b": 4}', 0, 0);
++CREATE OR REPLACE FUNCTION plv8_trigger_handler() RETURNS trigger AS
++$$
++    var sum = 0;
++    for (var k in NEW.data){ sum += NEW.data[k];}
++    NEW.sum = sum
++    return NEW;
++$$ 
++LANGUAGE plv8;
++CREATE TRIGGER plv8test_trigger
++BEFORE INSERT OR UPDATE
++ON plv8test FOR EACH ROW
++EXECUTE PROCEDURE plv8_trigger_handler();
++-- test OK
++update plv8test set num = 2 where id =2;
++-- then add two fields and drop one of them
++alter table plv8test add column repro1 varchar;
++alter table plv8test add column repro2 varchar;
++alter table plv8test drop column repro1;
++-- dropped columns should work with trigger
++update plv8test set repro2='test';
+diff --git a/plv8.cc b/plv8.cc
+index 600d500..c697428 100644
+--- a/plv8.cc
++++ b/plv8.cc
+@@ -1549,8 +1549,12 @@ Converter::ToDatum(Handle<v8::Value> value, Tuplestorestate *tupstore)
+ 
+ 	for (int c = 0; c < m_tupdesc->natts; c++)
+ 	{
++		/* Make sure dropped columns are skipped by backend code. */
+ 		if (m_tupdesc->attrs[c]->attisdropped)
++		{
++			nulls[c] = true;
+ 			continue;
++		}
+ 
+ 		Handle<v8::Value> attr = m_is_scalar ? value : obj->Get(m_colnames[c]);
+ 		if (attr.IsEmpty() || attr->IsUndefined() || attr->IsNull())
+diff --git a/sql/plv8.sql b/sql/plv8.sql
+index 80f3d08..efe833a 100644
+--- a/sql/plv8.sql
++++ b/sql/plv8.sql
+@@ -475,3 +475,33 @@ $$ LANGUAGE plv8;
+ ALTER TABLE t_attdrop DROP COLUMN b;
+ SELECT f_attdrop(t.*) FROM t;
+ SELECT f_attdrop(2);
++
++create table plv8test ( id serial primary key, data json, sum integer, num integer);
++insert into plv8test (data, sum, num) values ('{"a": 1, "b": 2}', 0, 0);
++insert into plv8test (data, sum, num) values ('{"a": 3, "b": 4}', 0, 0);
++insert into plv8test (data, sum, num) values ('{"a": 3, "b": 4}', 0, 0);
++
++CREATE OR REPLACE FUNCTION plv8_trigger_handler() RETURNS trigger AS
++$$
++    var sum = 0;
++    for (var k in NEW.data){ sum += NEW.data[k];}
++    NEW.sum = sum
++    return NEW;
++$$ 
++LANGUAGE plv8;
++
++CREATE TRIGGER plv8test_trigger
++BEFORE INSERT OR UPDATE
++ON plv8test FOR EACH ROW
++EXECUTE PROCEDURE plv8_trigger_handler();
++
++-- test OK
++update plv8test set num = 2 where id =2;
++-- then add two fields and drop one of them
++alter table plv8test add column repro1 varchar;
++alter table plv8test add column repro2 varchar;
++alter table plv8test drop column repro1;
++
++-- dropped columns should work with trigger
++update plv8test set repro2='test';
++

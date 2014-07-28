@@ -1,0 +1,115 @@
+commit 094df45dce2a879d1814b792aeb46b38f0f0ef87
+Author: Hitoshi Harada <umi.tanuki@gmail.com>
+Date:   Wed May 7 01:28:18 2014 -0700
+
+    Remove exception specifier from PG callbacks.
+    
+    9.4 includes function declaration in PG_FUNCTION_INFO_V1 macro, which is
+    not compatible with ours using exception specifiers.  Actually I don't
+    see the reason we have them so simply I remove them.
+
+diff --git a/plv8.cc b/plv8.cc
+index 54d4f3a..600d500 100644
+--- a/plv8.cc
++++ b/plv8.cc
+@@ -47,12 +47,12 @@ PG_FUNCTION_INFO_V1(plcoffee_call_validator);
+ PG_FUNCTION_INFO_V1(plls_call_handler);
+ PG_FUNCTION_INFO_V1(plls_call_validator);
+ 
+-Datum	plv8_call_handler(PG_FUNCTION_ARGS) throw();
+-Datum	plv8_call_validator(PG_FUNCTION_ARGS) throw();
+-Datum	plcoffee_call_handler(PG_FUNCTION_ARGS) throw();
+-Datum	plcoffee_call_validator(PG_FUNCTION_ARGS) throw();
+-Datum	plls_call_handler(PG_FUNCTION_ARGS) throw();
+-Datum	plls_call_validator(PG_FUNCTION_ARGS) throw();
++Datum	plv8_call_handler(PG_FUNCTION_ARGS);
++Datum	plv8_call_validator(PG_FUNCTION_ARGS);
++Datum	plcoffee_call_handler(PG_FUNCTION_ARGS);
++Datum	plcoffee_call_validator(PG_FUNCTION_ARGS);
++Datum	plls_call_handler(PG_FUNCTION_ARGS);
++Datum	plls_call_validator(PG_FUNCTION_ARGS);
+ 
+ void _PG_init(void);
+ 
+@@ -60,9 +60,9 @@ void _PG_init(void);
+ PG_FUNCTION_INFO_V1(plv8_inline_handler);
+ PG_FUNCTION_INFO_V1(plcoffee_inline_handler);
+ PG_FUNCTION_INFO_V1(plls_inline_handler);
+-Datum	plv8_inline_handler(PG_FUNCTION_ARGS) throw();
+-Datum	plcoffee_inline_handler(PG_FUNCTION_ARGS) throw();
+-Datum	plls_inline_handler(PG_FUNCTION_ARGS) throw();
++Datum	plv8_inline_handler(PG_FUNCTION_ARGS);
++Datum	plcoffee_inline_handler(PG_FUNCTION_ARGS);
++Datum	plls_inline_handler(PG_FUNCTION_ARGS);
+ #endif
+ } // extern "C"
+ 
+@@ -307,19 +307,19 @@ common_pl_call_handler(PG_FUNCTION_ARGS, Dialect dialect) throw()
+ }
+ 
+ Datum
+-plv8_call_handler(PG_FUNCTION_ARGS) throw()
++plv8_call_handler(PG_FUNCTION_ARGS)
+ {
+ 	return common_pl_call_handler(fcinfo, PLV8_DIALECT_NONE);
+ }
+ 
+ Datum
+-plcoffee_call_handler(PG_FUNCTION_ARGS) throw()
++plcoffee_call_handler(PG_FUNCTION_ARGS)
+ {
+ 	return common_pl_call_handler(fcinfo, PLV8_DIALECT_COFFEE);
+ }
+ 
+ Datum
+-plls_call_handler(PG_FUNCTION_ARGS) throw()
++plls_call_handler(PG_FUNCTION_ARGS)
+ {
+ 	return common_pl_call_handler(fcinfo, PLV8_DIALECT_LIVESCRIPT);
+ }
+@@ -354,19 +354,19 @@ common_pl_inline_handler(PG_FUNCTION_ARGS, Dialect dialect) throw()
+ }
+ 
+ Datum
+-plv8_inline_handler(PG_FUNCTION_ARGS) throw()
++plv8_inline_handler(PG_FUNCTION_ARGS)
+ {
+ 	return common_pl_inline_handler(fcinfo, PLV8_DIALECT_NONE);
+ }
+ 
+ Datum
+-plcoffee_inline_handler(PG_FUNCTION_ARGS) throw()
++plcoffee_inline_handler(PG_FUNCTION_ARGS)
+ {
+ 	return common_pl_inline_handler(fcinfo, PLV8_DIALECT_COFFEE);
+ }
+ 
+ Datum
+-plls_inline_handler(PG_FUNCTION_ARGS) throw()
++plls_inline_handler(PG_FUNCTION_ARGS)
+ {
+ 	return common_pl_inline_handler(fcinfo, PLV8_DIALECT_LIVESCRIPT);
+ }
+@@ -746,19 +746,19 @@ common_pl_call_validator(PG_FUNCTION_ARGS, Dialect dialect) throw()
+ }
+ 
+ Datum
+-plv8_call_validator(PG_FUNCTION_ARGS) throw()
++plv8_call_validator(PG_FUNCTION_ARGS)
+ {
+ 	return common_pl_call_validator(fcinfo, PLV8_DIALECT_NONE);
+ }
+ 
+ Datum
+-plcoffee_call_validator(PG_FUNCTION_ARGS) throw()
++plcoffee_call_validator(PG_FUNCTION_ARGS)
+ {
+ 	return common_pl_call_validator(fcinfo, PLV8_DIALECT_COFFEE);
+ }
+ 
+ Datum
+-plls_call_validator(PG_FUNCTION_ARGS) throw()
++plls_call_validator(PG_FUNCTION_ARGS)
+ {
+ 	return common_pl_call_validator(fcinfo, PLV8_DIALECT_LIVESCRIPT);
+ }
