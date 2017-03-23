@@ -1,4 +1,4 @@
-plv8 (1.4.2.ds-2+deb8u1) jessie-security; urgency=high
+plv8 (1.4.2.ds-2+deb8u1) jessie; urgency=high
 
   * Security bugfix picked from 1.4.9: Check for permission to call functions.
 
