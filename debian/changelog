@@ -1,3 +1,9 @@
+plv8 (1.4.2.ds-2+deb8u1) jessie-security; urgency=high
+
+  * Security bugfix picked from 1.4.9: Check for permission to call functions.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 23 Mar 2017 10:59:59 +0100
+
 plv8 (1.4.2.ds-2) unstable; urgency=medium
 
   * Pull patches from upstream to support PostgreSQL 9.4.
